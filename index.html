@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RANDOM ACCESS PROTOCOL // CYBER_TERMINAL</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --terminal-bg: #0d1117;
+            --neon-green: #00ff41;
+            --neon-cyan: #00f0ff;
+            --dark-green: #003b00;
+            --grid-color: rgba(0, 255, 65, 0.06);
+            --border-glow: rgba(0, 240, 255, 0.4);
+            --scanline: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            animation: bgPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%,
+            100% {
+                background-color: #0a0a0a;
+            }
+            50% {
+                background-color: #050505;
+            }
+        }
+
+        /* Scanline Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    var(--scanline) 2px,
+                    var(--scanline) 4px);
+            pointer-events: none;
+            z-index: 10;
+            animation: scanlineMove 8s linear infinite;
+        }
+
+        @keyframes scanlineMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 100px;
+            }
+        }
+
+        /* Glitch effect overlay (subtle) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
+            pointer-events: none;
+            z-index: 11;
+        }
+
+        /* Main Container */
+        .terminal-container {
+            position: relative;
+            z-index: 20;
+            width: 90%;
+            max-width: 700px;
+            background: var(--terminal-bg);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 6px;
+            box-shadow:
+                0 0 30px rgba(0, 240, 255, 0.15),
+                0 0 80px rgba(0, 255, 65, 0.08),
+                inset 0 0 80px rgba(0, 0, 0, 0.5);
+            padding: 0;
+            overflow: hidden;
+            animation: terminalFlicker 10s infinite;
+        }
+
+        @keyframes terminalFlicker {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            92% {
+                opacity: 1;
+            }
+            93% {
+                opacity: 0.85;
+            }
+            94% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 0.9;
+            }
+            96% {
+                opacity: 1;
+            }
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background: #1a1a2e;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            position: relative;
+        }
+
+        .title-bar .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot.red {
+            background: #ff5f56;
+            box-shadow: 0 0 8px #ff5f56;
+        }
+        .dot.yellow {
+            background: #ffbd2e;
+            box-shadow: 0 0 8px #ffbd2e;
+        }
+        .dot.green-dot {
+            background: #27c93f;
+            box-shadow: 0 0 8px #27c93f;
+        }
+
+        .title-text {
+            color: #8899aa;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-left: 8px;
+            text-transform: uppercase;
+            flex-grow: 1;
+            user-select: none;
+        }
+
+        .title-bar .status {
+            color: var(--neon-green);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            animation: blink 2s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Content */
+        .content {
+            padding: 35px 30px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Ascii Art */
+        .ascii-art {
+            color: var(--neon-cyan);
+            font-size: 0.6rem;
+            line-height: 1.1;
+            white-space: pre;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px var(--neon-cyan);
+            animation: asciiGlow 3s ease-in-out infinite;
+            user-select: none;
+            overflow-x: auto;
+        }
+
+        @keyframes asciiGlow {
+            0%,
+            100% {
+                text-shadow: 0 0 5px var(--neon-cyan), 0 0 15px rgba(0, 240, 255, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 12px var(--neon-cyan), 0 0 30px rgba(0, 240, 255, 0.8);
+            }
+        }
+
+        /* Warning Text */
+        .warning-text {
+            color: var(--neon-green);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            animation: warningBlink 1.5s step-end infinite;
+            user-select: none;
+        }
+
+        @keyframes warningBlink {
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        /* Terminal Output */
+        .terminal-output {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 4px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            text-align: left;
+            min-height: 60px;
+            color: var(--neon-green);
+            font-size: 0.8rem;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.05);
+        }
+
+        .terminal-output .prompt {
+            color: var(--neon-cyan);
+            margin-right: 8px;
+        }
+        .terminal-output .cursor {
+            animation: blink 1s step-end infinite;
+            font-weight: bold;
+        }
+
+        /* Button */
+        .btn-launch {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            padding: 18px 50px;
+            cursor: pointer;
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.2s ease;
+            text-shadow: 0 0 10px var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.1);
+            z-index: 25;
+            outline: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-launch:hover {
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow:
+                0 0 30px rgba(0, 240, 255, 0.5),
+                0 0 60px rgba(0, 240, 255, 0.3),
+                inset 0 0 25px rgba(0, 240, 255, 0.2);
+            text-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+            transform: scale(1.02);
+            border-color: #ffffff;
+        }
+
+        .btn-launch:active {
+            background: rgba(0, 255, 65, 0.2);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            text-shadow: 0 0 15px var(--neon-green);
+            box-shadow:
+                0 0 40px rgba(0, 255, 65, 0.6),
+                inset 0 0 30px rgba(0, 255, 65, 0.3);
+            transform: scale(0.96);
+            transition: all 0.05s ease;
+        }
+
+        /* Glitch overlay on click */
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 240, 255, 0.3);
+            pointer-events: none;
+            z-index: 100;
+            animation: glitchFlash 0.6s ease-out forwards;
+        }
+
+        @keyframes glitchFlash {
+            0% {
+                opacity: 1;
+                background: rgba(0, 240, 255, 0.7);
+            }
+            20% {
+                opacity: 0;
+                background: rgba(0, 255, 65, 0.5);
+            }
+            40% {
+                opacity: 0.8;
+                background: rgba(255, 0, 100, 0.3);
+            }
+            60% {
+                opacity: 0.1;
+            }
+            100% {
+                opacity: 0;
+                background: transparent;
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .particle {
+            position: absolute;
+            color: var(--neon-green);
+            font-size: 0.7rem;
+            opacity: 0.3;
+            animation: floatUp linear infinite;
+            user-select: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        .footer-text {
+            color: #445566;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            margin-top: 15px;
+            user-select: none;
+        }
+
+        /* Loading text after click */
+        .loading-text {
+            color: var(--neon-green);
+            letter-spacing: 4px;
+            font-size: 1rem;
+            margin-top: 15px;
+            animation: blink 0.6s step-end infinite;
+            display: none;
+        }
+        .loading-text.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .ascii-art {
+                font-size: 0.4rem;
+            }
+            .btn-launch {
+                font-size: 1rem;
+                padding: 14px 30px;
+                letter-spacing: 4px;
+            }
+            .content {
+                padding: 25px 15px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main Terminal -->
+    <div class="terminal-container">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green-dot"></span>
+            <span class="title-text">CYBER_TERMINAL v4.2 // ENCRYPTED_CHANNEL</span>
+            <span class="status">● SECURE</span>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- ASCII Art -->
+            <pre class="ascii-art">
+     ▄▄▄· ▄· ▄▌ ▄▄▄·▄▄▄▄▄ ▄▄▄·  ▄▄▄· ▄▄▌  ▄▄▄▄·
+    ▐█ ▄█▐█▪██▌▐█ ▄█•██  ▐█ ▀█ ▐█ ▀█ ██•  ▐█ ▀█▪
+     ██▀·▐█▌▐█▪ ██▀· ▐█.▪▄█▀▀█ ▄█▀▀█ ██   ▐█▀▀█▄
+    ▐█▪·• ▐█▀·.▐█▪·• ▐█▌·▐█ ▪▐▌▐█ ▪▐▌▐█▌  ██▄▪▐█
+    .▀     ▀ • .▀    ▀▀▀  ▀  ▀  ▀  ▀ .▀▀▀ ·▀▀▀▀
+            </pre>
+
+            <!-- Warning -->
+            <p class="warning-text">⚠ CLASSIFIED ACCESS ⚠</p>
+
+            <!-- Terminal Output -->
+            <div class="terminal-output" id="terminalOutput">
+                <span class="prompt">root@cyber:~$</span> system ready...<br>
+                <span class="prompt">root@cyber:~$</span> awaiting input command<span class="cursor">_</span>
+            </div>
+
+            <!-- Launch Button -->
+            <button class="btn-launch" id="btnLaunch" onclick="launchRandom()">
+                ▶ EXECUTE
+            </button>
+
+            <!-- Loading Text -->
+            <p class="loading-text" id="loadingText">BREACHING... PLEASE WAIT</p>
+
+            <!-- Footer -->
+            <p class="footer-text">[ CONNECTION ENCRYPTED • PROTOCOL HTTPS ]</p>
+        </div>
+    </div>
+
+    <script>
+        // ===== DAFTAR LINK RANDOM =====
+        // Kamu bisa menambah, mengurangi, atau mengubah link di sini
+        const randomLinks = [
+            // Cyber / Tech Themed
+            "https://cybermap.kaspersky.com/", // Peta serangan cyber real-time
+            "https://theuselessweb.com/", // Situs absurd random
+            "https://pointerpointer.com/", // Orang nunjuk kursor kamu
+            "https://radio.garden/", // Radio seluruh dunia
+            "https://window-swap.com/", // Jendela orang dari seluruh dunia
+            "https://neal.fun/deep-sea/", // Menyelam ke laut dalam
+            "https://quickdraw.withgoogle.com/", // AI tebak gambar
+            "https://stars.chromeexperiments.com/", // Jelajahi galaksi
+            "https://www.omfgdogs.com/", // Anjing-anjing berlari
+            "https://papertoilet.com/", // Tisu toilet virtual
+            "https://findtheinvisiblecow.com/", // Cari sapi tak terlihat (suara)
+            "https://hackertyper.com/", // Ketik apapun jadi kode hacker
+            "https://corndog.io/", // Corn dog terbang
+            "https://sliding.toys/mystic-mixer/", // Mainan pasir interaktif
+            "https://mondrianandme.com/", // Gaya lukisan Mondrian
+            "https://trypap.com/", // Kertas kosong online
+            "https://beesbeesbees.com/", // Lebah lebah lebah
+            "https://thatsthefinger.com/", // Jari tengah
+            "https://www.bouncingdvdlogo.com/", // Logo DVD mantul
+            "https://cat-bounce.com/", // Kucing mantul
+            "https://floatingqrcode.com/", // QR code terbang
+            "https://optical.toys/", // Ilusi optik keren
+            "https://lines.chromeexperiments.com/", // Gambar garis abstrak
+        ];
+
+        function launchRandom() {
+            const btn = document.getElementById('btnLaunch');
+            const terminalOutput = document.getElementById('terminalOutput');
+            const loadingText = document.getElementById('loadingText');
+
+            // Disable button
+            btn.disabled = true;
+            btn.textContent = '⏳ EXECUTING...';
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+
+            // Tampilkan loading
+            loadingText.classList.add('active');
+
+            // Update terminal
+            terminalOutput.innerHTML = `
+                        <span class="prompt">root@cyber:~$</span> initiating breach protocol...<br>
+                        <span class="prompt">root@cyber:~$</span> decrypting target coordinates...<br>
+                        <span class="prompt">root@cyber:~$</span> establishing secure tunnel<span class="cursor">_</span>
+                    `;
+
+            // Buat efek glitch overlay
+            const glitchOverlay = document.createElement('div');
+            glitchOverlay.className = 'glitch-overlay';
+            document.body.appendChild(glitchOverlay);
+
+            // Hapus overlay setelah animasi selesai
+            setTimeout(() => {
+                if (glitchOverlay.parentNode) {
+                    glitchOverlay.parentNode.removeChild(glitchOverlay);
+                }
+            }, 700);
+
+            // Efek getar pada container
+            const container = document.querySelector('.terminal-container');
+            container.style.animation = 'none';
+            container.offsetHeight;
+            container.style.animation = 'terminalFlicker 0.3s infinite';
+
+            // Pilih link random
+            const randomIndex = Math.floor(Math.random() * randomLinks.length);
+            const chosenLink = randomLinks[randomIndex];
+
+            // Update terminal sebelum pindah
+            setTimeout(() => {
+                terminalOutput.innerHTML = `
+                            <span class="prompt">root@cyber:~$</span> target acquired: [${chosenLink}]<br>
+                            <span class="prompt">root@cyber:~$</span> redirecting in 0.8s<span class="cursor">_</span>
+                        `;
+            }, 500);
+
+            // Redirect ke link random setelah delay untuk efek dramatis
+            setTimeout(() => {
+                window.location.href = chosenLink;
+            }, 1300);
+
+            // Fallback: jika redirect gagal, reset tombol setelah 5 detik
+            setTimeout(() => {
+                if (btn.disabled) {
+                    btn.disabled = false;
+                    btn.textContent = '▶ EXECUTE';
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+                    loadingText.classList.remove('active');
+                    container.style.animation = 'terminalFlicker 10s infinite';
+                    terminalOutput.innerHTML = `
+                                <span class="prompt">root@cyber:~$</span> connection timeout.<br>
+                                <span class="prompt">root@cyber:~$</span> retry?<span class="cursor">_</span>
+                            `;
+                }
+            }, 5000);
+        }
+
+        // ===== FLOATING PARTICLES =====
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const chars = ['0', '1', '$', '#', '%', '&', '*', '▓', '▒', '░', '◈', '◇', '◆'];
+
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('span');
+                particle.className = 'particle';
+                particle.textContent = chars[Math.floor(Math.random() * chars.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 15) + 's';
+                particle.style.fontSize = (Math.random() * 0.9 + 0.5) + 'rem';
+                particle.style.color = Math.random() > 0.5 ? '#00ff41' : '#00f0ff';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Efek suara klik buatan (visual feedback)
+        document.addEventListener('click', function(e) {
+            // Create ripple effect on click (opsional, bisa dihapus)
+            const ripple = document.createElement('div');
+            ripple.style.cssText = `
+                        position: fixed;
+                        width: 10px;
+                        height: 10px;
+                        background: rgba(0, 240, 255, 0.5);
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 101;
+                        left: ${e.clientX - 5}px;
+                        top: ${e.clientY - 5}px;
+                        animation: rippleEffect 0.6s ease-out forwards;
+                    `;
+            document.body.appendChild(ripple);
+            setTimeout(() => {
+                if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+            }, 600);
+        });
+
+        // Inject ripple animation
+        const rippleStyle = document.createElement('style');
+        rippleStyle.textContent = `
+                    @keyframes rippleEffect {
+                        0% { transform: scale(1); opacity: 1; }
+                        100% { transform: scale(30); opacity: 0; }
+                    }
+                `;
+        document.head.appendChild(rippleStyle);
+    </script>
+</body>
+</html>
