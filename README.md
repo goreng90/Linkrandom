@@ -1,0 +1,2 @@
+# Linkrandom
+Random
