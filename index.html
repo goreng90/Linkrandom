@@ -3,19 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RANDOM ACCESS PROTOCOL // CYBER_TERMINAL</title>
+    <title>Vibnime · Anime & Karakter A-Z</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --bg: #0a0a0a;
-            --terminal-bg: #0d1117;
-            --neon-green: #00ff41;
-            --neon-cyan: #00f0ff;
-            --dark-green: #003b00;
-            --grid-color: rgba(0, 255, 65, 0.06);
-            --border-glow: rgba(0, 240, 255, 0.4);
-            --scanline: rgba(0, 0, 0, 0.15);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -23,602 +13,469 @@
         }
 
         body {
-            background-color: var(--bg);
-            background-image:
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 40px 40px;
-            font-family: 'Courier New', 'Fira Code', monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #87CEEB 0%, #98FB98 50%, #228B22 100%);
+            padding: 15px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 20px #ff9800, 0 0 40px #ff5722;
+        }
+
+        .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .letter-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .letter-btn:hover {
+            background: #ff9800;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #ff9800;
+        }
+
+        .letter-btn.active {
+            background: #ff5722;
+            box-shadow: 0 0 25px #ff5722;
+        }
+
+        .menu-nav {
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-            animation: bgPulse 8s ease-in-out infinite;
+            gap: 15px;
+            padding: 15px;
+            flex-wrap: wrap;
         }
 
-        @keyframes bgPulse {
-            0%,
-            100% {
-                background-color: #0a0a0a;
-            }
-            50% {
-                background-color: #050505;
-            }
+        .menu-btn {
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 14px;
         }
 
-        /* Scanline Overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 2px,
-                    var(--scanline) 2px,
-                    var(--scanline) 4px);
-            pointer-events: none;
-            z-index: 10;
-            animation: scanlineMove 8s linear infinite;
+        .menu-btn:hover {
+            background: rgba(255, 152, 0, 0.6);
+            transform: translateY(-2px);
         }
 
-        @keyframes scanlineMove {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 0 100px;
-            }
+        .menu-btn.active {
+            background: #ff9800;
+            box-shadow: 0 5px 20px rgba(255, 152, 0, 0.4);
         }
 
-        /* Glitch effect overlay (subtle) */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
-            pointer-events: none;
-            z-index: 11;
+        .content {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
-        /* Main Container */
-        .terminal-container {
-            position: relative;
-            z-index: 20;
-            width: 90%;
-            max-width: 700px;
-            background: var(--terminal-bg);
-            border: 1px solid rgba(0, 240, 255, 0.25);
-            border-radius: 6px;
-            box-shadow:
-                0 0 30px rgba(0, 240, 255, 0.15),
-                0 0 80px rgba(0, 255, 65, 0.08),
-                inset 0 0 80px rgba(0, 0, 0, 0.5);
-            padding: 0;
-            overflow: hidden;
-            animation: terminalFlicker 10s infinite;
-        }
-
-        @keyframes terminalFlicker {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            92% {
-                opacity: 1;
-            }
-            93% {
-                opacity: 0.85;
-            }
-            94% {
-                opacity: 1;
-            }
-            95% {
-                opacity: 0.9;
-            }
-            96% {
-                opacity: 1;
-            }
-        }
-
-        /* Title Bar */
-        .title-bar {
-            background: #1a1a2e;
-            padding: 10px 16px;
+        .anime-list {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-            position: relative;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .title-bar .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+        .anime-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .anime-btn:hover {
+            background: #4CAF50;
+            transform: scale(1.05);
+        }
+
+        .characters-container {
+            margin-top: 20px;
+        }
+
+        .characters-title {
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
             display: inline-block;
         }
-        .dot.red {
-            background: #ff5f56;
-            box-shadow: 0 0 8px #ff5f56;
-        }
-        .dot.yellow {
-            background: #ffbd2e;
-            box-shadow: 0 0 8px #ffbd2e;
-        }
-        .dot.green-dot {
-            background: #27c93f;
-            box-shadow: 0 0 8px #27c93f;
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
         }
 
-        .title-text {
-            color: #8899aa;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            margin-left: 8px;
-            text-transform: uppercase;
-            flex-grow: 1;
-            user-select: none;
-        }
-
-        .title-bar .status {
-            color: var(--neon-green);
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            animation: blink 2s step-end infinite;
-        }
-
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0;
-            }
-        }
-
-        /* Content */
-        .content {
-            padding: 35px 30px 40px;
+        .character-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px;
             text-align: center;
-            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+            animation: fadeIn 0.5s ease;
         }
 
-        /* Ascii Art */
-        .ascii-art {
-            color: var(--neon-cyan);
-            font-size: 0.6rem;
-            line-height: 1.1;
-            white-space: pre;
-            margin-bottom: 20px;
-            text-shadow: 0 0 8px var(--neon-cyan);
-            animation: asciiGlow 3s ease-in-out infinite;
-            user-select: none;
-            overflow-x: auto;
-        }
-
-        @keyframes asciiGlow {
-            0%,
-            100% {
-                text-shadow: 0 0 5px var(--neon-cyan), 0 0 15px rgba(0, 240, 255, 0.5);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            50% {
-                text-shadow: 0 0 12px var(--neon-cyan), 0 0 30px rgba(0, 240, 255, 0.8);
-            }
-        }
-
-        /* Warning Text */
-        .warning-text {
-            color: var(--neon-green);
-            font-size: 0.85rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-            animation: warningBlink 1.5s step-end infinite;
-            user-select: none;
-        }
-
-        @keyframes warningBlink {
-            0%,
-            100% {
-                opacity: 0.7;
-            }
-            50% {
-                opacity: 0.2;
-            }
-        }
-
-        /* Terminal Output */
-        .terminal-output {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(0, 255, 65, 0.2);
-            border-radius: 4px;
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            text-align: left;
-            min-height: 60px;
-            color: var(--neon-green);
-            font-size: 0.8rem;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.05);
-        }
-
-        .terminal-output .prompt {
-            color: var(--neon-cyan);
-            margin-right: 8px;
-        }
-        .terminal-output .cursor {
-            animation: blink 1s step-end infinite;
-            font-weight: bold;
-        }
-
-        /* Button */
-        .btn-launch {
-            background: transparent;
-            border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            font-family: 'Courier New', monospace;
-            font-size: 1.3rem;
-            font-weight: bold;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            padding: 18px 50px;
-            cursor: pointer;
-            border-radius: 4px;
-            position: relative;
-            transition: all 0.2s ease;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.1);
-            z-index: 25;
-            outline: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .btn-launch:hover {
-            background: rgba(0, 240, 255, 0.1);
-            box-shadow:
-                0 0 30px rgba(0, 240, 255, 0.5),
-                0 0 60px rgba(0, 240, 255, 0.3),
-                inset 0 0 25px rgba(0, 240, 255, 0.2);
-            text-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
-            transform: scale(1.02);
-            border-color: #ffffff;
-        }
-
-        .btn-launch:active {
-            background: rgba(0, 255, 65, 0.2);
-            border-color: var(--neon-green);
-            color: var(--neon-green);
-            text-shadow: 0 0 15px var(--neon-green);
-            box-shadow:
-                0 0 40px rgba(0, 255, 65, 0.6),
-                inset 0 0 30px rgba(0, 255, 65, 0.3);
-            transform: scale(0.96);
-            transition: all 0.05s ease;
-        }
-
-        /* Glitch overlay on click */
-        .glitch-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 240, 255, 0.3);
-            pointer-events: none;
-            z-index: 100;
-            animation: glitchFlash 0.6s ease-out forwards;
-        }
-
-        @keyframes glitchFlash {
-            0% {
+            to {
                 opacity: 1;
-                background: rgba(0, 240, 255, 0.7);
-            }
-            20% {
-                opacity: 0;
-                background: rgba(0, 255, 65, 0.5);
-            }
-            40% {
-                opacity: 0.8;
-                background: rgba(255, 0, 100, 0.3);
-            }
-            60% {
-                opacity: 0.1;
-            }
-            100% {
-                opacity: 0;
-                background: transparent;
+                transform: translateY(0);
             }
         }
 
-        /* Floating particles */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
+        .character-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 152, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .particle {
-            position: absolute;
-            color: var(--neon-green);
-            font-size: 0.7rem;
-            opacity: 0.3;
-            animation: floatUp linear infinite;
-            user-select: none;
+        .character-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin-bottom: 10px;
+            background: #ff9800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            margin: 0 auto 10px;
         }
 
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.4;
-            }
-            90% {
-                opacity: 0.3;
-            }
-            100% {
-                transform: translateY(-10vh) rotate(360deg);
-                opacity: 0;
-            }
+        .character-name {
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
         }
 
-        /* Footer */
-        .footer-text {
-            color: #445566;
-            font-size: 0.65rem;
-            letter-spacing: 2px;
-            margin-top: 15px;
-            user-select: none;
+        .section-title {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
 
-        /* Loading text after click */
-        .loading-text {
-            color: var(--neon-green);
-            letter-spacing: 4px;
-            font-size: 1rem;
-            margin-top: 15px;
-            animation: blink 0.6s step-end infinite;
-            display: none;
-        }
-        .loading-text.active {
-            display: block;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .ascii-art {
-                font-size: 0.4rem;
-            }
-            .btn-launch {
-                font-size: 1rem;
-                padding: 14px 30px;
-                letter-spacing: 4px;
-            }
-            .content {
-                padding: 25px 15px 30px;
-            }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: white;
+            background: rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
 
-    <!-- Floating Particles -->
-    <div class="particles" id="particles"></div>
-
-    <!-- Main Terminal -->
-    <div class="terminal-container">
-        <!-- Title Bar -->
-        <div class="title-bar">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green-dot"></span>
-            <span class="title-text">CYBER_TERMINAL v4.2 // ENCRYPTED_CHANNEL</span>
-            <span class="status">● SECURE</span>
+    <div class="main-container">
+        <div class="header">
+            <div class="logo">✦ Vibnime ✦</div>
+            <p style="color: #fff; margin-top:5px;">Klik judul anime untuk melihat karakter</p>
         </div>
 
-        <!-- Content -->
-        <div class="content">
-            <!-- ASCII Art -->
-            <pre class="ascii-art">
-     ▄▄▄· ▄· ▄▌ ▄▄▄·▄▄▄▄▄ ▄▄▄·  ▄▄▄· ▄▄▌  ▄▄▄▄·
-    ▐█ ▄█▐█▪██▌▐█ ▄█•██  ▐█ ▀█ ▐█ ▀█ ██•  ▐█ ▀█▪
-     ██▀·▐█▌▐█▪ ██▀· ▐█.▪▄█▀▀█ ▄█▀▀█ ██   ▐█▀▀█▄
-    ▐█▪·• ▐█▀·.▐█▪·• ▐█▌·▐█ ▪▐▌▐█ ▪▐▌▐█▌  ██▄▪▐█
-    .▀     ▀ • .▀    ▀▀▀  ▀  ▀  ▀  ▀ .▀▀▀ ·▀▀▀▀
-            </pre>
+        <div class="alphabet-nav" id="alphabetNav"></div>
 
-            <!-- Warning -->
-            <p class="warning-text">⚠ CLASSIFIED ACCESS ⚠</p>
-
-            <!-- Terminal Output -->
-            <div class="terminal-output" id="terminalOutput">
-                <span class="prompt">root@cyber:~$</span> system ready...<br>
-                <span class="prompt">root@cyber:~$</span> awaiting input command<span class="cursor">_</span>
-            </div>
-
-            <!-- Launch Button -->
-            <button class="btn-launch" id="btnLaunch" onclick="launchRandom()">
-                ▶ EXECUTE
-            </button>
-
-            <!-- Loading Text -->
-            <p class="loading-text" id="loadingText">BREACHING... PLEASE WAIT</p>
-
-            <!-- Footer -->
-            <p class="footer-text">[ CONNECTION ENCRYPTED • PROTOCOL HTTPS ]</p>
+        <div class="menu-nav">
+            <button class="menu-btn active" data-menu="all">📚 Semua Anime</button>
+            <button class="menu-btn" data-menu="popular">🔥 Populer</button>
+            <button class="menu-btn" data-menu="new">✨ Terbaru</button>
         </div>
+
+        <div class="content" id="content"></div>
+
+        <div class="footer">🌿 vibnime · jelajahi dunia anime 🌿</div>
     </div>
 
     <script>
-        // ===== DAFTAR LINK RANDOM =====
-        // Kamu bisa menambah, mengurangi, atau mengubah link di sini
-        const randomLinks = [
-            // Cyber / Tech Themed
-            "https://cybermap.kaspersky.com/", // Peta serangan cyber real-time
-            "https://theuselessweb.com/", // Situs absurd random
-            "https://pointerpointer.com/", // Orang nunjuk kursor kamu
-            "https://radio.garden/", // Radio seluruh dunia
-            "https://window-swap.com/", // Jendela orang dari seluruh dunia
-            "https://neal.fun/deep-sea/", // Menyelam ke laut dalam
-            "https://quickdraw.withgoogle.com/", // AI tebak gambar
-            "https://stars.chromeexperiments.com/", // Jelajahi galaksi
-            "https://www.omfgdogs.com/", // Anjing-anjing berlari
-            "https://papertoilet.com/", // Tisu toilet virtual
-            "https://findtheinvisiblecow.com/", // Cari sapi tak terlihat (suara)
-            "https://hackertyper.com/", // Ketik apapun jadi kode hacker
-            "https://corndog.io/", // Corn dog terbang
-            "https://sliding.toys/mystic-mixer/", // Mainan pasir interaktif
-            "https://mondrianandme.com/", // Gaya lukisan Mondrian
-            "https://trypap.com/", // Kertas kosong online
-            "https://beesbeesbees.com/", // Lebah lebah lebah
-            "https://thatsthefinger.com/", // Jari tengah
-            "https://www.bouncingdvdlogo.com/", // Logo DVD mantul
-            "https://cat-bounce.com/", // Kucing mantul
-            "https://floatingqrcode.com/", // QR code terbang
-            "https://optical.toys/", // Ilusi optik keren
-            "https://lines.chromeexperiments.com/", // Gambar garis abstrak
-        ];
+        const animeData = {
+            A: [
+                { title: 'Attack on Titan', chars: ['Eren Yeager', 'Mikasa Ackerman', 'Levi Ackerman', 'Armin Arlert',
+                        'Hange Zoe'
+                    ] },
+                { title: 'Angel Beats!', chars: ['Yuzuru Otonashi', 'Kanade Tachibana', 'Yui'] },
+                { title: 'Akame ga Kill!', chars: ['Akame', 'Tatsumi', 'Esdeath', 'Leone'] }
+            ],
+            B: [
+                { title: 'Bleach', chars: ['Ichigo Kurosaki', 'Rukia Kuchiki', 'Orihime Inoue', 'Renji Abarai'] },
+                { title: 'Black Clover', chars: ['Asta', 'Yuno', 'Noelle Silva'] },
+                { title: 'Boruto', chars: ['Boruto Uzumaki', 'Sarada Uchiha', 'Mitsuki'] }
+            ],
+            C: [
+                { title: 'Chainsaw Man', chars: ['Denji', 'Power', 'Makima', 'Aki Hayakawa'] },
+                { title: 'Code Geass', chars: ['Lelouch', 'C.C.', 'Suzaku Kururugi'] },
+                { title: 'Cowboy Bebop', chars: ['Spike Spiegel', 'Jet Black', 'Faye Valentine'] }
+            ],
+            D: [
+                { title: 'Demon Slayer', chars: ['Tanjiro Kamado', 'Nezuko Kamado', 'Zenitsu', 'Inosuke', 'Rengoku'] },
+                { title: 'Death Note', chars: ['Light Yagami', 'L', 'Misa Amane'] },
+                { title: 'Dragon Ball', chars: ['Goku', 'Vegeta', 'Gohan', 'Piccolo'] }
+            ],
+            E: [
+                { title: 'Evangelion', chars: ['Shinji Ikari', 'Rei Ayanami', 'Asuka Langley'] },
+                { title: 'Erased', chars: ['Satoru Fujinuma', 'Kayo Hinazuki'] }
+            ],
+            F: [
+                { title: 'Fairy Tail', chars: ['Natsu Dragneel', 'Lucy Heartfilia', 'Erza Scarlet', 'Gray Fullbuster'] },
+                { title: 'Fullmetal Alchemist', chars: ['Edward Elric', 'Alphonse Elric', 'Roy Mustang'] }
+            ],
+            G: [
+                { title: 'Gintama', chars: ['Gintoki Sakata', 'Shinpachi', 'Kagura'] },
+                { title: 'Gurren Lagann', chars: ['Simon', 'Kamina', 'Yoko'] }
+            ],
+            H: [
+                { title: 'Hunter x Hunter', chars: ['Gon Freecss', 'Killua Zoldyck', 'Kurapika', 'Hisoka'] },
+                { title: 'Haikyuu!!', chars: ['Hinata Shoyo', 'Kageyama Tobio', 'Tsukishima Kei'] }
+            ],
+            I: [
+                { title: 'Inuyasha', chars: ['Inuyasha', 'Kagome Higurashi', 'Sesshomaru'] }
+            ],
+            J: [
+                { title: 'Jujutsu Kaisen', chars: ['Yuji Itadori', 'Megumi Fushiguro', 'Gojo Satoru', 'Nobara'] },
+                { title: 'JoJo Bizarre Adventure', chars: ['Jotaro Kujo', 'Dio Brando', 'Joseph Joestar'] }
+            ],
+            K: [
+                { title: 'Kimi no Na wa', chars: ['Taki Tachibana', 'Mitsuha Miyamizu'] },
+                { title: 'Kaguya-sama', chars: ['Shirogane Miyuki', 'Shinomiya Kaguya', 'Fujiwara Chika'] },
+                { title: 'Konosuba', chars: ['Kazuma', 'Aqua', 'Megumin', 'Darkness'] }
+            ],
+            L: [
+                { title: 'Lycoris Recoil', chars: ['Chisato Nishikigi', 'Takina Inoue'] }
+            ],
+            M: [
+                { title: 'My Hero Academia', chars: ['Izuku Midoriya', 'Bakugo Katsuki', 'Uraraka Ochaco',
+                    'Todoroki Shoto'
+                ] },
+                { title: 'Mob Psycho 100', chars: ['Shigeo Kageyama', 'Reigen Arataka', 'Dimple'] }
+            ],
+            N: [
+                { title: 'Naruto', chars: ['Naruto Uzumaki', 'Sasuke Uchiha', 'Sakura Haruno', 'Kakashi Hatake'] },
+                { title: 'No Game No Life', chars: ['Sora', 'Shiro', 'Jibril'] },
+                { title: 'Noragami', chars: ['Yato', 'Hiyori Iki', 'Yukine'] }
+            ],
+            O: [
+                { title: 'One Piece', chars: ['Monkey D. Luffy', 'Roronoa Zoro', 'Nami', 'Sanji', 'Nico Robin'] },
+                { title: 'One Punch Man', chars: ['Saitama', 'Genos', 'Tatsumaki'] }
+            ],
+            P: [
+                { title: 'Pokemon', chars: ['Ash Ketchum', 'Pikachu', 'Misty', 'Brock'] }
+            ],
+            Q: [
+                { title: 'Quintessential Quintuplets', chars: ['Ichika', 'Nino', 'Miku', 'Yotsuba', 'Itsuki'] }
+            ],
+            R: [
+                { title: 'Re:Zero', chars: ['Subaru Natsuki', 'Emilia', 'Rem', 'Ram'] },
+                { title: 'Rurouni Kenshin', chars: ['Kenshin Himura', 'Kaoru Kamiya', 'Sanosuke Sagara'] }
+            ],
+            S: [
+                { title: 'Spy x Family', chars: ['Loid Forger', 'Anya Forger', 'Yor Forger'] },
+                { title: 'Sword Art Online', chars: ['Kirito', 'Asuna', 'Leafa', 'Sinon'] },
+                { title: 'Steins;Gate', chars: ['Okabe Rintaro', 'Kurisu Makise', 'Mayuri Shiina'] }
+            ],
+            T: [
+                { title: 'Tokyo Ghoul', chars: ['Ken Kaneki', 'Touka Kirishima', 'Hide'] },
+                { title: 'Toradora!', chars: ['Ryuuji Takasu', 'Taiga Aisaka', 'Minori Kushieda'] }
+            ],
+            U: [
+                { title: 'Ushio to Tora', chars: ['Ushio Aotsuki', 'Tora'] }
+            ],
+            V: [
+                { title: 'Vinland Saga', chars: ['Thorfinn', 'Canute', 'Thorkell', 'Askeladd'] },
+                { title: 'Violet Evergarden', chars: ['Violet Evergarden', 'Gilbert'] }
+            ],
+            W: [
+                { title: 'Wonder Egg Priority', chars: ['Ai Ohto', 'Neiru Aonuma', 'Rika Kawai'] }
+            ],
+            X: [
+                { title: 'XxxHOLiC', chars: ['Watanuki Kimihiro', 'Yuko Ichihara'] }
+            ],
+            Y: [
+                { title: 'Your Lie in April', chars: ['Kousei Arima', 'Kaori Miyazono', 'Tsubaki Sawabe'] },
+                { title: 'Yu Yu Hakusho', chars: ['Yusuke Urameshi', 'Kurama', 'Hiei'] }
+            ],
+            Z: [
+                { title: 'Zom 100', chars: ['Akira Tendo', 'Shizuka Mikazuki', 'Kencho'] }
+            ]
+        };
 
-        function launchRandom() {
-            const btn = document.getElementById('btnLaunch');
-            const terminalOutput = document.getElementById('terminalOutput');
-            const loadingText = document.getElementById('loadingText');
+        const content = document.getElementById('content');
+        const alphabetNav = document.getElementById('alphabetNav');
+        let currentLetter = null;
 
-            // Disable button
-            btn.disabled = true;
-            btn.textContent = '⏳ EXECUTING...';
-            btn.style.opacity = '0.7';
-            btn.style.pointerEvents = 'none';
+        function createAlphabetNav() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            alphabetNav.innerHTML = letters.map(letter =>
+                `<button class="letter-btn" data-letter="${letter}">${letter}</button>`
+            ).join('');
 
-            // Tampilkan loading
-            loadingText.classList.add('active');
-
-            // Update terminal
-            terminalOutput.innerHTML = `
-                        <span class="prompt">root@cyber:~$</span> initiating breach protocol...<br>
-                        <span class="prompt">root@cyber:~$</span> decrypting target coordinates...<br>
-                        <span class="prompt">root@cyber:~$</span> establishing secure tunnel<span class="cursor">_</span>
-                    `;
-
-            // Buat efek glitch overlay
-            const glitchOverlay = document.createElement('div');
-            glitchOverlay.className = 'glitch-overlay';
-            document.body.appendChild(glitchOverlay);
-
-            // Hapus overlay setelah animasi selesai
-            setTimeout(() => {
-                if (glitchOverlay.parentNode) {
-                    glitchOverlay.parentNode.removeChild(glitchOverlay);
+            alphabetNav.addEventListener('click', (e) => {
+                if (e.target.classList.contains('letter-btn')) {
+                    const letter = e.target.dataset.letter;
+                    document.querySelectorAll('.letter-btn').forEach(b => b.classList.remove(
+                        'active'));
+                    e.target.classList.add('active');
+                    currentLetter = letter;
+                    renderAnimeList(letter);
+                    document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove(
+                        'active'));
                 }
-            }, 700);
-
-            // Efek getar pada container
-            const container = document.querySelector('.terminal-container');
-            container.style.animation = 'none';
-            container.offsetHeight;
-            container.style.animation = 'terminalFlicker 0.3s infinite';
-
-            // Pilih link random
-            const randomIndex = Math.floor(Math.random() * randomLinks.length);
-            const chosenLink = randomLinks[randomIndex];
-
-            // Update terminal sebelum pindah
-            setTimeout(() => {
-                terminalOutput.innerHTML = `
-                            <span class="prompt">root@cyber:~$</span> target acquired: [${chosenLink}]<br>
-                            <span class="prompt">root@cyber:~$</span> redirecting in 0.8s<span class="cursor">_</span>
-                        `;
-            }, 500);
-
-            // Redirect ke link random setelah delay untuk efek dramatis
-            setTimeout(() => {
-                window.location.href = chosenLink;
-            }, 1300);
-
-            // Fallback: jika redirect gagal, reset tombol setelah 5 detik
-            setTimeout(() => {
-                if (btn.disabled) {
-                    btn.disabled = false;
-                    btn.textContent = '▶ EXECUTE';
-                    btn.style.opacity = '1';
-                    btn.style.pointerEvents = 'auto';
-                    loadingText.classList.remove('active');
-                    container.style.animation = 'terminalFlicker 10s infinite';
-                    terminalOutput.innerHTML = `
-                                <span class="prompt">root@cyber:~$</span> connection timeout.<br>
-                                <span class="prompt">root@cyber:~$</span> retry?<span class="cursor">_</span>
-                            `;
-                }
-            }, 5000);
+            });
         }
 
-        // ===== FLOATING PARTICLES =====
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const chars = ['0', '1', '$', '#', '%', '&', '*', '▓', '▒', '░', '◈', '◇', '◆'];
-
-            for (let i = 0; i < 40; i++) {
-                const particle = document.createElement('span');
-                particle.className = 'particle';
-                particle.textContent = chars[Math.floor(Math.random() * chars.length)];
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
-                particle.style.animationDelay = (Math.random() * 15) + 's';
-                particle.style.fontSize = (Math.random() * 0.9 + 0.5) + 'rem';
-                particle.style.color = Math.random() > 0.5 ? '#00ff41' : '#00f0ff';
-                particlesContainer.appendChild(particle);
+        function renderAnimeList(letter) {
+            const animes = animeData[letter] || [];
+            if (animes.length === 0) {
+                content.innerHTML =
+                    `<p style="color:white; text-align:center;">Tidak ada anime untuk huruf ${letter}</p>`;
+                return;
             }
+
+            let html = `<div class="section-title">📺 Anime Awalan "${letter}"</div>`;
+            html += `<div class="anime-list">`;
+            animes.forEach((anime, idx) => {
+                html +=
+                    `<button class="anime-btn" data-letter="${letter}" data-idx="${idx}">▶ ${anime.title}</button>`;
+            });
+            html += `</div>`;
+            html += `<div id="charactersContainer"></div>`;
+            content.innerHTML = html;
+
+            document.querySelectorAll('.anime-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const l = this.dataset.letter;
+                    const i = parseInt(this.dataset.idx);
+                    const anime = animeData[l][i];
+                    showCharacters(anime);
+                });
+            });
         }
 
-        createParticles();
+        function renderAllAnime() {
+            let html = '';
+            for (let letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+                const animes = animeData[letter] || [];
+                if (animes.length > 0) {
+                    html +=
+                        `<div class="section-title" style="margin-top:15px;">📌 ${letter}</div><div class="anime-list">`;
+                    animes.forEach((anime, idx) => {
+                        html +=
+                            `<button class="anime-btn" data-letter="${letter}" data-idx="${idx}">▶ ${anime.title}</button>`;
+                    });
+                    html += `</div>`;
+                }
+            }
+            html += `<div id="charactersContainer"></div>`;
+            content.innerHTML = html;
 
-        // Efek suara klik buatan (visual feedback)
-        document.addEventListener('click', function(e) {
-            // Create ripple effect on click (opsional, bisa dihapus)
-            const ripple = document.createElement('div');
-            ripple.style.cssText = `
-                        position: fixed;
-                        width: 10px;
-                        height: 10px;
-                        background: rgba(0, 240, 255, 0.5);
-                        border-radius: 50%;
-                        pointer-events: none;
-                        z-index: 101;
-                        left: ${e.clientX - 5}px;
-                        top: ${e.clientY - 5}px;
-                        animation: rippleEffect 0.6s ease-out forwards;
-                    `;
-            document.body.appendChild(ripple);
+            document.querySelectorAll('.anime-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const l = this.dataset.letter;
+                    const i = parseInt(this.dataset.idx);
+                    const anime = animeData[l][i];
+                    showCharacters(anime);
+                });
+            });
+        }
+
+        function showCharacters(anime) {
+            const container = document.getElementById('charactersContainer');
+            if (!container) return;
+
+            container.style.opacity = '0';
+            container.style.transition = 'opacity 0.3s';
+
             setTimeout(() => {
-                if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
-            }, 600);
+                container.innerHTML = `
+                    <div class="characters-title">👥 Karakter dari "${anime.title}"</div>
+                    <div class="character-grid">
+                        ${anime.chars.map(name => `
+                            <div class="character-card">
+                                <div class="character-img">🎭</div>
+                                <div class="character-name">${name}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.style.opacity = '1';
+                container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 200);
+        }
+
+        // Menu buttons
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.letter-btn').forEach(b => b.classList.remove('active'));
+                currentLetter = null;
+
+                const menu = this.dataset.menu;
+                if (menu === 'all') renderAllAnime();
+                else if (menu === 'popular') renderAnimeList('N');
+                else if (menu === 'new') renderAnimeList('S');
+            });
         });
 
-        // Inject ripple animation
-        const rippleStyle = document.createElement('style');
-        rippleStyle.textContent = `
-                    @keyframes rippleEffect {
-                        0% { transform: scale(1); opacity: 1; }
-                        100% { transform: scale(30); opacity: 0; }
-                    }
-                `;
-        document.head.appendChild(rippleStyle);
+        // Init
+        createAlphabetNav();
+        renderAllAnime();
     </script>
 </body>
 </html>
