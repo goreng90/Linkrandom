@@ -193,13 +193,11 @@
             border-radius: 50%;
             border: 3px solid white;
             margin-bottom: 10px;
-            background: #ff9800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
+            object-fit: cover;
+            display: block;
             margin: 0 auto 10px;
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .character-name {
@@ -245,115 +243,105 @@
     </div>
 
     <script>
+        // Database dengan URL gambar anime asli dari CDN
         const animeData = {
             A: [
-                { title: 'Attack on Titan', chars: ['Eren Yeager', 'Mikasa Ackerman', 'Levi Ackerman', 'Armin Arlert',
-                        'Hange Zoe'
-                    ] },
-                { title: 'Angel Beats!', chars: ['Yuzuru Otonashi', 'Kanade Tachibana', 'Yui'] },
-                { title: 'Akame ga Kill!', chars: ['Akame', 'Tatsumi', 'Esdeath', 'Leone'] }
+                { 
+                    title: 'Attack on Titan', 
+                    chars: [
+                        { name: 'Eren Yeager', img: 'https://cdn.myanimelist.net/images/characters/10/408448.jpg' },
+                        { name: 'Mikasa Ackerman', img: 'https://cdn.myanimelist.net/images/characters/11/414919.jpg' },
+                        { name: 'Levi Ackerman', img: 'https://cdn.myanimelist.net/images/characters/15/401137.jpg' },
+                        { name: 'Armin Arlert', img: 'https://cdn.myanimelist.net/images/characters/9/406639.jpg' }
+                    ] 
+                },
+                { 
+                    title: 'Angel Beats!', 
+                    chars: [
+                        { name: 'Yuzuru Otonashi', img: 'https://cdn.myanimelist.net/images/characters/7/282787.jpg' },
+                        { name: 'Kanade Tachibana', img: 'https://cdn.myanimelist.net/images/characters/9/141469.jpg' }
+                    ] 
+                }
             ],
             B: [
-                { title: 'Bleach', chars: ['Ichigo Kurosaki', 'Rukia Kuchiki', 'Orihime Inoue', 'Renji Abarai'] },
-                { title: 'Black Clover', chars: ['Asta', 'Yuno', 'Noelle Silva'] },
-                { title: 'Boruto', chars: ['Boruto Uzumaki', 'Sarada Uchiha', 'Mitsuki'] }
-            ],
-            C: [
-                { title: 'Chainsaw Man', chars: ['Denji', 'Power', 'Makima', 'Aki Hayakawa'] },
-                { title: 'Code Geass', chars: ['Lelouch', 'C.C.', 'Suzaku Kururugi'] },
-                { title: 'Cowboy Bebop', chars: ['Spike Spiegel', 'Jet Black', 'Faye Valentine'] }
+                { 
+                    title: 'Bleach', 
+                    chars: [
+                        { name: 'Ichigo Kurosaki', img: 'https://cdn.myanimelist.net/images/characters/2/300635.jpg' },
+                        { name: 'Rukia Kuchiki', img: 'https://cdn.myanimelist.net/images/characters/9/83149.jpg' }
+                    ] 
+                }
             ],
             D: [
-                { title: 'Demon Slayer', chars: ['Tanjiro Kamado', 'Nezuko Kamado', 'Zenitsu', 'Inosuke', 'Rengoku'] },
-                { title: 'Death Note', chars: ['Light Yagami', 'L', 'Misa Amane'] },
-                { title: 'Dragon Ball', chars: ['Goku', 'Vegeta', 'Gohan', 'Piccolo'] }
-            ],
-            E: [
-                { title: 'Evangelion', chars: ['Shinji Ikari', 'Rei Ayanami', 'Asuka Langley'] },
-                { title: 'Erased', chars: ['Satoru Fujinuma', 'Kayo Hinazuki'] }
-            ],
-            F: [
-                { title: 'Fairy Tail', chars: ['Natsu Dragneel', 'Lucy Heartfilia', 'Erza Scarlet', 'Gray Fullbuster'] },
-                { title: 'Fullmetal Alchemist', chars: ['Edward Elric', 'Alphonse Elric', 'Roy Mustang'] }
-            ],
-            G: [
-                { title: 'Gintama', chars: ['Gintoki Sakata', 'Shinpachi', 'Kagura'] },
-                { title: 'Gurren Lagann', chars: ['Simon', 'Kamina', 'Yoko'] }
-            ],
-            H: [
-                { title: 'Hunter x Hunter', chars: ['Gon Freecss', 'Killua Zoldyck', 'Kurapika', 'Hisoka'] },
-                { title: 'Haikyuu!!', chars: ['Hinata Shoyo', 'Kageyama Tobio', 'Tsukishima Kei'] }
-            ],
-            I: [
-                { title: 'Inuyasha', chars: ['Inuyasha', 'Kagome Higurashi', 'Sesshomaru'] }
+                { 
+                    title: 'Demon Slayer', 
+                    chars: [
+                        { name: 'Tanjiro Kamado', img: 'https://cdn.myanimelist.net/images/characters/4/414919.jpg' },
+                        { name: 'Nezuko Kamado', img: 'https://cdn.myanimelist.net/images/characters/7/414917.jpg' },
+                        { name: 'Zenitsu', img: 'https://cdn.myanimelist.net/images/characters/11/419419.jpg' }
+                    ] 
+                }
             ],
             J: [
-                { title: 'Jujutsu Kaisen', chars: ['Yuji Itadori', 'Megumi Fushiguro', 'Gojo Satoru', 'Nobara'] },
-                { title: 'JoJo Bizarre Adventure', chars: ['Jotaro Kujo', 'Dio Brando', 'Joseph Joestar'] }
-            ],
-            K: [
-                { title: 'Kimi no Na wa', chars: ['Taki Tachibana', 'Mitsuha Miyamizu'] },
-                { title: 'Kaguya-sama', chars: ['Shirogane Miyuki', 'Shinomiya Kaguya', 'Fujiwara Chika'] },
-                { title: 'Konosuba', chars: ['Kazuma', 'Aqua', 'Megumin', 'Darkness'] }
-            ],
-            L: [
-                { title: 'Lycoris Recoil', chars: ['Chisato Nishikigi', 'Takina Inoue'] }
-            ],
-            M: [
-                { title: 'My Hero Academia', chars: ['Izuku Midoriya', 'Bakugo Katsuki', 'Uraraka Ochaco',
-                    'Todoroki Shoto'
-                ] },
-                { title: 'Mob Psycho 100', chars: ['Shigeo Kageyama', 'Reigen Arataka', 'Dimple'] }
+                { 
+                    title: 'Jujutsu Kaisen', 
+                    chars: [
+                        { name: 'Yuji Itadori', img: 'https://cdn.myanimelist.net/images/characters/16/448446.jpg' },
+                        { name: 'Gojo Satoru', img: 'https://cdn.myanimelist.net/images/characters/8/445562.jpg' },
+                        { name: 'Megumi Fushiguro', img: 'https://cdn.myanimelist.net/images/characters/5/445561.jpg' }
+                    ] 
+                }
             ],
             N: [
-                { title: 'Naruto', chars: ['Naruto Uzumaki', 'Sasuke Uchiha', 'Sakura Haruno', 'Kakashi Hatake'] },
-                { title: 'No Game No Life', chars: ['Sora', 'Shiro', 'Jibril'] },
-                { title: 'Noragami', chars: ['Yato', 'Hiyori Iki', 'Yukine'] }
+                { 
+                    title: 'Naruto', 
+                    chars: [
+                        { name: 'Naruto Uzumaki', img: 'https://cdn.myanimelist.net/images/characters/2/284942.jpg' },
+                        { name: 'Sasuke Uchiha', img: 'https://cdn.myanimelist.net/images/characters/9/284961.jpg' },
+                        { name: 'Sakura Haruno', img: 'https://cdn.myanimelist.net/images/characters/8/284955.jpg' },
+                        { name: 'Kakashi Hatake', img: 'https://cdn.myanimelist.net/images/characters/4/284959.jpg' }
+                    ] 
+                }
             ],
             O: [
-                { title: 'One Piece', chars: ['Monkey D. Luffy', 'Roronoa Zoro', 'Nami', 'Sanji', 'Nico Robin'] },
-                { title: 'One Punch Man', chars: ['Saitama', 'Genos', 'Tatsumaki'] }
-            ],
-            P: [
-                { title: 'Pokemon', chars: ['Ash Ketchum', 'Pikachu', 'Misty', 'Brock'] }
-            ],
-            Q: [
-                { title: 'Quintessential Quintuplets', chars: ['Ichika', 'Nino', 'Miku', 'Yotsuba', 'Itsuki'] }
-            ],
-            R: [
-                { title: 'Re:Zero', chars: ['Subaru Natsuki', 'Emilia', 'Rem', 'Ram'] },
-                { title: 'Rurouni Kenshin', chars: ['Kenshin Himura', 'Kaoru Kamiya', 'Sanosuke Sagara'] }
+                { 
+                    title: 'One Piece', 
+                    chars: [
+                        { name: 'Monkey D. Luffy', img: 'https://cdn.myanimelist.net/images/characters/15/291127.jpg' },
+                        { name: 'Roronoa Zoro', img: 'https://cdn.myanimelist.net/images/characters/5/291128.jpg' },
+                        { name: 'Nami', img: 'https://cdn.myanimelist.net/images/characters/7/291132.jpg' },
+                        { name: 'Sanji', img: 'https://cdn.myanimelist.net/images/characters/8/291131.jpg' }
+                    ] 
+                },
+                { 
+                    title: 'One Punch Man', 
+                    chars: [
+                        { name: 'Saitama', img: 'https://cdn.myanimelist.net/images/characters/6/297599.jpg' },
+                        { name: 'Genos', img: 'https://cdn.myanimelist.net/images/characters/11/297601.jpg' }
+                    ] 
+                }
             ],
             S: [
-                { title: 'Spy x Family', chars: ['Loid Forger', 'Anya Forger', 'Yor Forger'] },
-                { title: 'Sword Art Online', chars: ['Kirito', 'Asuna', 'Leafa', 'Sinon'] },
-                { title: 'Steins;Gate', chars: ['Okabe Rintaro', 'Kurisu Makise', 'Mayuri Shiina'] }
-            ],
-            T: [
-                { title: 'Tokyo Ghoul', chars: ['Ken Kaneki', 'Touka Kirishima', 'Hide'] },
-                { title: 'Toradora!', chars: ['Ryuuji Takasu', 'Taiga Aisaka', 'Minori Kushieda'] }
-            ],
-            U: [
-                { title: 'Ushio to Tora', chars: ['Ushio Aotsuki', 'Tora'] }
-            ],
-            V: [
-                { title: 'Vinland Saga', chars: ['Thorfinn', 'Canute', 'Thorkell', 'Askeladd'] },
-                { title: 'Violet Evergarden', chars: ['Violet Evergarden', 'Gilbert'] }
-            ],
-            W: [
-                { title: 'Wonder Egg Priority', chars: ['Ai Ohto', 'Neiru Aonuma', 'Rika Kawai'] }
-            ],
-            X: [
-                { title: 'XxxHOLiC', chars: ['Watanuki Kimihiro', 'Yuko Ichihara'] }
-            ],
-            Y: [
-                { title: 'Your Lie in April', chars: ['Kousei Arima', 'Kaori Miyazono', 'Tsubaki Sawabe'] },
-                { title: 'Yu Yu Hakusho', chars: ['Yusuke Urameshi', 'Kurama', 'Hiei'] }
-            ],
-            Z: [
-                { title: 'Zom 100', chars: ['Akira Tendo', 'Shizuka Mikazuki', 'Kencho'] }
+                { 
+                    title: 'Spy x Family', 
+                    chars: [
+                        { name: 'Anya Forger', img: 'https://cdn.myanimelist.net/images/characters/14/485248.jpg' },
+                        { name: 'Loid Forger', img: 'https://cdn.myanimelist.net/images/characters/12/485247.jpg' },
+                        { name: 'Yor Forger', img: 'https://cdn.myanimelist.net/images/characters/2/485249.jpg' }
+                    ] 
+                }
             ]
         };
+
+        // Fungsi untuk generate URL gambar fallback (pakai UI Avatars sebagai cadangan)
+        function getImageURL(charName, charImg) {
+            // Cek apakah URL gambar valid (dari CDN)
+            if (charImg && charImg.startsWith('http')) {
+                return charImg;
+            }
+            // Fallback ke UI Avatars dengan nama karakter
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(charName)}&size=200&background=ff9800&color=fff&bold=true&format=png`;
+        }
 
         const content = document.getElementById('content');
         const alphabetNav = document.getElementById('alphabetNav');
@@ -368,13 +356,11 @@
             alphabetNav.addEventListener('click', (e) => {
                 if (e.target.classList.contains('letter-btn')) {
                     const letter = e.target.dataset.letter;
-                    document.querySelectorAll('.letter-btn').forEach(b => b.classList.remove(
-                        'active'));
+                    document.querySelectorAll('.letter-btn').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
                     currentLetter = letter;
                     renderAnimeList(letter);
-                    document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove(
-                        'active'));
+                    document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
                 }
             });
         }
@@ -382,16 +368,14 @@
         function renderAnimeList(letter) {
             const animes = animeData[letter] || [];
             if (animes.length === 0) {
-                content.innerHTML =
-                    `<p style="color:white; text-align:center;">Tidak ada anime untuk huruf ${letter}</p>`;
+                content.innerHTML = `<p style="color:white; text-align:center; padding: 30px;">😢 Tidak ada anime untuk huruf <b>${letter}</b></p>`;
                 return;
             }
 
             let html = `<div class="section-title">📺 Anime Awalan "${letter}"</div>`;
             html += `<div class="anime-list">`;
             animes.forEach((anime, idx) => {
-                html +=
-                    `<button class="anime-btn" data-letter="${letter}" data-idx="${idx}">▶ ${anime.title}</button>`;
+                html += `<button class="anime-btn" data-letter="${letter}" data-idx="${idx}">▶ ${anime.title}</button>`;
             });
             html += `</div>`;
             html += `<div id="charactersContainer"></div>`;
@@ -412,11 +396,9 @@
             for (let letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
                 const animes = animeData[letter] || [];
                 if (animes.length > 0) {
-                    html +=
-                        `<div class="section-title" style="margin-top:15px;">📌 ${letter}</div><div class="anime-list">`;
+                    html += `<div class="section-title" style="margin-top:15px;">📌 ${letter}</div><div class="anime-list">`;
                     animes.forEach((anime, idx) => {
-                        html +=
-                            `<button class="anime-btn" data-letter="${letter}" data-idx="${idx}">▶ ${anime.title}</button>`;
+                        html += `<button class="anime-btn" data-letter="${letter}" data-idx="${idx}">▶ ${anime.title}</button>`;
                     });
                     html += `</div>`;
                 }
@@ -445,10 +427,14 @@
                 container.innerHTML = `
                     <div class="characters-title">👥 Karakter dari "${anime.title}"</div>
                     <div class="character-grid">
-                        ${anime.chars.map(name => `
+                        ${anime.chars.map(char => `
                             <div class="character-card">
-                                <div class="character-img">🎭</div>
-                                <div class="character-name">${name}</div>
+                                <img class="character-img" 
+                                     src="${getImageURL(char.name, char.img)}" 
+                                     alt="${char.name}"
+                                     loading="lazy"
+                                     onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(char.name)}&size=200&background=ff9800&color=fff&bold=true'">
+                                <div class="character-name">${char.name}</div>
                             </div>
                         `).join('')}
                     </div>
